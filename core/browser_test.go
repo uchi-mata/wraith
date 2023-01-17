@@ -3,7 +3,7 @@ package core_test
 import (
 	"testing"
 
-	"github.com/N0MoreSecr3ts/wraith/core"
+	"github.com/uchi-mata/wraith/core"
 
 	. "github.com/smartystreets/goconvey/convey"
 )

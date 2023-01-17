@@ -1,4 +1,4 @@
-module github.com/N0MoreSecr3ts/wraith
+module github.com/uchi-mata/wraith
 
 go 1.18
 

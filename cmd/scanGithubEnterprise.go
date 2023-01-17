@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/N0MoreSecr3ts/wraith/core"
-	"github.com/N0MoreSecr3ts/wraith/version"
+	"github.com/uchi-mata/wraith/core"
+	"github.com/uchi-mata/wraith/version"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

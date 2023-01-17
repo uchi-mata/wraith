@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/N0MoreSecr3ts/wraith/core"
+	"github.com/uchi-mata/wraith/core"
 
 	ot "github.com/otiai10/copy"
 	"github.com/spf13/cobra"

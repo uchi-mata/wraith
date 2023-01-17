@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/N0MoreSecr3ts/wraith/version"
+	"github.com/uchi-mata/wraith/version"
 
 	"golang.org/x/sync/errgroup"
 )

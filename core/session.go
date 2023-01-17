@@ -12,9 +12,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/N0MoreSecr3ts/wraith/version"
 	"github.com/google/go-github/github"
 	"github.com/mitchellh/go-homedir"
+	"github.com/uchi-mata/wraith/version"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"

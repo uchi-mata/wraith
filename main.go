@@ -22,7 +22,7 @@ THE SOFTWARE.
 package main
 
 import (
-	"github.com/N0MoreSecr3ts/wraith/cmd"
+	"github.com/uchi-mata/wraith/cmd"
 )
 
 func main() {
