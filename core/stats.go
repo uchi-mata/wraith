@@ -169,6 +169,7 @@ func PrintDebug(sess *Session) {
 	sess.Out.Debug("\nJSON output..............%v", sess.JSONOutput)
 	sess.Out.Debug("\nCSV output...............%v", sess.CSVOutput)
 	sess.Out.Debug("\nSilent output............%v", sess.Silent)
+	sess.Out.Debug("\nSignature files............%v", sess.SignatureFiles)
 	sess.Out.Debug("\nWeb server enabled.......%v", sess.WebServer)
 	sess.Out.Debug("\n")
 }

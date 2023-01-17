@@ -47,8 +47,8 @@ func init() {
 	rootCmd.PersistentFlags().Int("max-file-size", 10, "Max file size to scan (in MB)")
 	rootCmd.PersistentFlags().Int("num-threads", -1, "Number of execution threads")
 	rootCmd.PersistentFlags().Bool("scan-tests", false, "Scan suspected test files")
-	rootCmd.PersistentFlags().String("signature-file", "$HOME/.wraith/signatures/default.yaml", "file(s) containing detection signatures.")
-	rootCmd.PersistentFlags().String("signature-path", "$HOME/.wraith/signatures", "path containing detection signatures.")
+	rootCmd.PersistentFlags().StringSlice("signature-file", []string{"$HOME/.wraith/signatures/default.yaml"}, "file(s) containing detection signatures.")
+	rootCmd.PersistentFlags().StringSlice("signature-path", []string{"$HOME/.wraith/signatures"}, "path(s) containing detection signatures, all .yaml files in the directory will be used. signature-file and signature-path can be used together.")
 	rootCmd.PersistentFlags().Bool("silent", false, "Suppress all output. An alternative output will need to be configured")
 	rootCmd.PersistentFlags().Bool("web-server", false, "Enable the web interface for scan output")
 

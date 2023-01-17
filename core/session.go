@@ -4,6 +4,7 @@ package core
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"os"
 	"runtime"
@@ -118,6 +119,7 @@ type Session struct {
 	ScanTests           bool
 	ScanType            string
 	Signatures          []*Signature
+	SignatureFiles      []string
 	Silent              bool
 	SkippableExt        []string
 	SkippablePath       []string
@@ -243,15 +245,38 @@ func (s *Session) Initialize(scanType string) {
 	var curSig []Signature
 	var combinedSig []Signature
 
-	// TODO need to catch this error here
-	for _, f := range WraithConfig.GetStringSlice("signature-file") {
+	ruleFiles := WraithConfig.GetStringSlice("signature-file")
+	rulePaths := WraithConfig.GetStringSlice("signature-path")
+
+	for _, path := range rulePaths {
+		rulePathFiles, err := fs.Glob(os.DirFS(path), "*.yaml")
+		if err != nil {
+			s.Out.Error(err.Error())
+			continue
+		}
+		for _, rpfs := range rulePathFiles {
+			ruleFiles = append(ruleFiles, fmt.Sprintf("%s/%s", path, rpfs))
+		}
+	}
+
+	finalRuleFiles := []string{}
+	for _, f := range ruleFiles {
+
+		_, err := os.Stat(f)
+		if err != nil {
+			s.Out.Error("File does not exist: %s\n", f)
+			continue
+		}
+
 		f = strings.TrimSpace(f)
 		h := SetHomeDir(f, s)
 		if PathExists(h, s) {
 			curSig = LoadSignatures(h, s.ConfidenceLevel, s)
 			combinedSig = append(combinedSig, curSig...)
 		}
+		finalRuleFiles = append(finalRuleFiles, f)
 	}
+	s.SignatureFiles = finalRuleFiles
 	Signatures = combinedSig
 }
 

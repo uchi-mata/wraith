@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -105,19 +104,15 @@ func DoFileScan(filename string, sess *Session) {
 
 	// Increment the number of files scanned
 	sess.Stats.IncrementFilesScanned()
-	fmt.Println(matchFile) // REMOVE ME
+
 	// Scan the file for know signatures
 	for _, signature := range Signatures {
-		fmt.Println("I am trying to match")
 		bMatched, matchMap := signature.ExtractMatch(matchFile, sess, nil)
-		fmt.Println("I am done trying to match against all sigs") // REMOVE ME
 
 		var content string // this is because file matches are puking
 
 		// for every instance of the secret that matched the specific rule create a new finding
 		for k, v := range matchMap {
-			fmt.Println("I found a match") // REMOVE ME
-
 			// Increment the total number of findings
 			sess.Stats.IncrementFindingsTotal()
 
