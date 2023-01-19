@@ -181,7 +181,7 @@ func SetConfig() {
 
 // Initialize will set the initial values and options used during a scan session
 func (s *Session) Initialize(scanType string) {
-
+	fmt.Println("Getting here 31")
 	s.BindAddress = WraithConfig.GetString("bind-address")
 	s.BindPort = WraithConfig.GetInt("bind-port")
 	s.CommitDepth = setCommitDepth(WraithConfig.GetFloat64("commit-depth"))
@@ -204,7 +204,6 @@ func (s *Session) Initialize(scanType string) {
 	s.Threads = WraithConfig.GetInt("num-threads")
 	s.WraithVersion = version.AppVersion()
 	s.WebServer = WraithConfig.GetBool("web-server")
-
 	if s.ScanType == "localGit" {
 		s.LocalPaths = WraithConfig.GetStringSlice("local-repos")
 	} else if s.ScanType == "localPath" {
@@ -216,13 +215,11 @@ func (s *Session) Initialize(scanType string) {
 		e = strings.TrimSpace(e)
 		s.SkippablePath = AppendIfMissing(s.SkippablePath, e)
 	}
-
 	// add any additional paths the user requested to exclude to the pre-defined slice
 	for _, e := range WraithConfig.GetStringSlice("ignore-path") {
 		e = strings.TrimSpace(e)
 		s.SkippablePath = AppendIfMissing(s.SkippablePath, e)
 	}
-
 	// the default ignorable extensions
 	for _, e := range defaultIgnoreExtensions {
 		s.SkippableExt = AppendIfMissing(s.SkippableExt, e)
@@ -241,7 +238,6 @@ func (s *Session) Initialize(scanType string) {
 	if !s.Silent && s.WebServer {
 		s.InitRouter()
 	}
-
 	var curSig []Signature
 	var combinedSig []Signature
 
@@ -415,6 +411,7 @@ func (s *Stats) UpdateProgress(current int, total int) {
 
 // NewSession  is the entry point for starting a new scan session
 func NewSession(scanType string) *Session {
+	fmt.Println("getting here41")
 	var session Session
 
 	session.Initialize(scanType)
