@@ -151,10 +151,10 @@ type githubRepository struct {
 
 // SetConfig will set the defaults, and load a config file and environment variables if they are present
 func SetConfig() {
+	viper.AutomaticEnv()
 	for key, value := range DefaultValues {
 		viper.SetDefault(key, value)
 	}
-
 	configFile := viper.GetString("config-file")
 
 	if configFile != DefaultValues["config-file"] {
@@ -172,16 +172,15 @@ func SetConfig() {
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
+		fmt.Println("Reading Config File: ", err)
 	}
-
-	viper.AutomaticEnv()
 
 	WraithConfig = viper.GetViper()
 }
 
 // Initialize will set the initial values and options used during a scan session
 func (s *Session) Initialize(scanType string) {
-	fmt.Println("Getting here 31")
+
 	s.BindAddress = WraithConfig.GetString("bind-address")
 	s.BindPort = WraithConfig.GetInt("bind-port")
 	s.CommitDepth = setCommitDepth(WraithConfig.GetFloat64("commit-depth"))
@@ -204,6 +203,7 @@ func (s *Session) Initialize(scanType string) {
 	s.Threads = WraithConfig.GetInt("num-threads")
 	s.WraithVersion = version.AppVersion()
 	s.WebServer = WraithConfig.GetBool("web-server")
+
 	if s.ScanType == "localGit" {
 		s.LocalPaths = WraithConfig.GetStringSlice("local-repos")
 	} else if s.ScanType == "localPath" {
@@ -215,11 +215,13 @@ func (s *Session) Initialize(scanType string) {
 		e = strings.TrimSpace(e)
 		s.SkippablePath = AppendIfMissing(s.SkippablePath, e)
 	}
+
 	// add any additional paths the user requested to exclude to the pre-defined slice
 	for _, e := range WraithConfig.GetStringSlice("ignore-path") {
 		e = strings.TrimSpace(e)
 		s.SkippablePath = AppendIfMissing(s.SkippablePath, e)
 	}
+
 	// the default ignorable extensions
 	for _, e := range defaultIgnoreExtensions {
 		s.SkippableExt = AppendIfMissing(s.SkippableExt, e)
@@ -238,6 +240,7 @@ func (s *Session) Initialize(scanType string) {
 	if !s.Silent && s.WebServer {
 		s.InitRouter()
 	}
+
 	var curSig []Signature
 	var combinedSig []Signature
 
@@ -247,7 +250,7 @@ func (s *Session) Initialize(scanType string) {
 	for _, path := range rulePaths {
 		rulePathFiles, err := fs.Glob(os.DirFS(path), "*.yaml")
 		if err != nil {
-			s.Out.Error(err.Error())
+			s.Out.Error("Enumerating files in rule paths:", err.Error())
 			continue
 		}
 		for _, rpfs := range rulePathFiles {
@@ -260,7 +263,7 @@ func (s *Session) Initialize(scanType string) {
 
 		_, err := os.Stat(f)
 		if err != nil {
-			s.Out.Error("File does not exist: %s\n", f)
+			s.Out.Error("Reading signatures from rule files, file does not exist: %s\n", f)
 			continue
 		}
 
@@ -411,7 +414,6 @@ func (s *Stats) UpdateProgress(current int, total int) {
 
 // NewSession  is the entry point for starting a new scan session
 func NewSession(scanType string) *Session {
-	fmt.Println("getting here41")
 	var session Session
 
 	session.Initialize(scanType)
