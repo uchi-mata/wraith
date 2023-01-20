@@ -248,6 +248,7 @@ func (s *Session) Initialize(scanType string) {
 	rulePaths := WraithConfig.GetStringSlice("signature-path")
 
 	for _, path := range rulePaths {
+		path = SetHomeDir(path, s)
 		rulePathFiles, err := fs.Glob(os.DirFS(path), "*.yaml")
 		if err != nil {
 			s.Out.Error("Enumerating files in rule paths:", err.Error())
@@ -260,15 +261,16 @@ func (s *Session) Initialize(scanType string) {
 
 	finalRuleFiles := []string{}
 	for _, f := range ruleFiles {
+		f = strings.TrimSpace(f)
+		h := SetHomeDir(f, s)
 
-		_, err := os.Stat(f)
+		_, err := os.Stat(h)
 		if err != nil {
-			s.Out.Error("Reading signatures from rule files, file does not exist: %s\n", f)
+			s.Out.Error("Reading signatures from rule files, file does not exist: %s\n", h)
 			continue
 		}
 
-		f = strings.TrimSpace(f)
-		h := SetHomeDir(f, s)
+
 		if PathExists(h, s) {
 			curSig = LoadSignatures(h, s.ConfidenceLevel, s)
 			combinedSig = append(combinedSig, curSig...)

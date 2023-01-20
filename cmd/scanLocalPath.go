@@ -4,6 +4,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/uchi-mata/wraith/core"
@@ -40,11 +41,14 @@ var scanLocalPathCmd = &cobra.Command{
 				sess.Out.Important("Web interface available at http://%s:%d\n", sess.BindAddress, sess.BindPort)
 			}
 		}
-
 		for _, p := range sess.LocalPaths {
 			if core.PathExists(p, sess) {
-				last := p[len(p)-1:]
-				if last == "/" {
+				//last := p[len(p)-1:]
+				//if last == "/" {
+				fileInfo, err := os.Stat(p)
+				if err != nil {
+				  sess.Out.Error("Trying to open --local-paths: ", err.Error)
+				} else if fileInfo.IsDir() {
 					core.ScanDir(p, sess)
 				} else {
 					core.DoFileScan(p, sess)
@@ -68,7 +72,7 @@ var scanLocalPathCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(scanLocalPathCmd)
 
-	scanLocalPathCmd.Flags().StringSlice("local-paths", nil, "List of local paths to scan")
+	scanLocalPathCmd.Flags().StringSlice("local-paths", nil, "List of local directories/files to scan. Use multiple --local-paths to scan multiple directories/files.")
 
 	err := viper.BindPFlag("local-paths", scanLocalPathCmd.Flags().Lookup("local-paths"))
 
